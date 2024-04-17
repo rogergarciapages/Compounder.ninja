@@ -10,48 +10,32 @@ function App() {
   const [age, setAge] = useState('');
   const [dailyExpense, setDailyExpense] = useState('');
   const [investmentOption, setInvestmentOption] = useState('');
-  const [compoundInterest, setCompoundInterest] = useState(0); // Initialize compound interest to 0
-
+  const [compoundInterest, setCompoundInterest] = useState(null); // Initialize compound interest to null
 
   // Function to handle form submission
   const handleSubmit = (e) => {
     e.preventDefault();
-  
+
     // Convert age and daily expense to numbers
     const userAge = parseInt(age);
     const userDailyExpense = parseFloat(dailyExpense);
-  
-     // Calculate compound interest based on investment option
-     let interest = 0;
-     switch (investmentOption) {
-       case 'SP500':
+
+    // Calculate compound interest based on investment option
+    let interest = 0;
+    switch (investmentOption) {
+      case 'SP500':
         // Perform compound interest calculation for S&P 500 investment
         interest = finance.CI(userDailyExpense * 20 * 12, 0.08, 60 - userAge, 0);
         break;
-      case 'Gold':
-        // Perform compound interest calculation for Gold investment
-        // Example calculation:
-        // compoundInterest = ...
-        break;
-      case 'Bitcoin':
-        // Perform compound interest calculation for Bitcoin investment
-        // Example calculation:
-        // compoundInterest = ...
-        break;
-      case 'NASDAQ':
-        // Perform compound interest calculation for NASDAQ investment
-        // Example calculation:
-        // compoundInterest = ...
-        break;
+      // Add cases for other investment options here
       default:
         // Handle invalid option
         break;
     }
-  
+
     // Display the calculated compound interest to the user
     setCompoundInterest(interest); // Update state with calculated compound interest
   };
-  
 
   return (
     <div className="App">
@@ -90,7 +74,7 @@ function App() {
         <button type="submit">Calculate</button>
       </form>
       {/* Display compound interest result */}
-      {compoundInterest !== 0 && (
+      {compoundInterest !== null && (
         <div>
           <p>Compound Interest: ${compoundInterest.toFixed(2)}</p>
         </div>
