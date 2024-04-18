@@ -1,15 +1,11 @@
 // App.js
 import React, { useState } from 'react';
-import Finance from 'financejs';
 import './App.css'; // Import your CSS styles here
-
-const finance = new Finance();
 
 function App() {
   // State variables to store user inputs and compound interest
   const [age, setAge] = useState('');
   const [dailyExpense, setDailyExpense] = useState('');
-  const [investmentOption, setInvestmentOption] = useState('');
   const [compoundInterest, setCompoundInterest] = useState(null); // Initialize compound interest to null
 
   // Function to handle form submission
@@ -20,21 +16,25 @@ function App() {
     const userAge = parseInt(age);
     const userDailyExpense = parseFloat(dailyExpense);
 
-    // Calculate compound interest based on investment option
-    let interest = 0;
-    switch (investmentOption) {
-      case 'SP500':
-        // Perform compound interest calculation for S&P 500 investment
-        interest = finance.CI(userDailyExpense * 20 * 12, 0.08, 60 - userAge, 0);
-        break;
-      // Add cases for other investment options here
-      default:
-        // Handle invalid option
-        break;
+    // Calculate compound interest
+    let totalInvestment = 0;
+    let monthlyReturns = 0;
+
+    for (let i = 0; i < 60 - userAge; i++) {
+      // Calculate monthly returns and update total investment
+      if (i === 0) {
+        // First month
+        monthlyReturns = 0; // No returns
+        totalInvestment += userDailyExpense * 20; // Initial investment
+      } else {
+        // Subsequent months
+        monthlyReturns = totalInvestment * 0.08 / 12; // Monthly returns (8% annual yield)
+        totalInvestment += userDailyExpense * 20 + monthlyReturns; // Additional investment plus returns
+      }
     }
 
     // Display the calculated compound interest to the user
-    setCompoundInterest(interest); // Update state with calculated compound interest
+    setCompoundInterest(totalInvestment); // Update state with calculated compound interest
   };
 
   return (
@@ -58,18 +58,6 @@ function App() {
             onChange={(e) => setDailyExpense(e.target.value)}
             required
           />
-        </label>
-        <label>
-          Investment Option:
-          <select
-            value={investmentOption}
-            onChange={(e) => setInvestmentOption(e.target.value)}
-            required
-          >
-            <option value="">Select an option</option>
-            <option value="SP500">S&P 500</option>
-            {/* Add other options here */}
-          </select>
         </label>
         <button type="submit">Calculate</button>
       </form>
